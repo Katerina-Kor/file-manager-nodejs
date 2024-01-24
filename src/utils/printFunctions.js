@@ -1,4 +1,4 @@
-import { getCurrentWorkingDirectory } from "./helpers.js";
+import { getCurrentWorkingDir } from "./helpers.js";
 import { DEFAULT_USERNAME } from "./constants.js";
 
 const printUsername = (username = DEFAULT_USERNAME) => {
@@ -6,7 +6,7 @@ const printUsername = (username = DEFAULT_USERNAME) => {
 };
 
 const printCurrentWorkingDir = () => {
-  console.log(`You are currently in ${getCurrentWorkingDirectory()}`);
+  console.log(`You are currently in ${getCurrentWorkingDir()}`);
 };
 
 const printByeMessage = (username = DEFAULT_USERNAME) => {

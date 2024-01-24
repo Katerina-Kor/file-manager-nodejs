@@ -13,13 +13,16 @@ const getUsername = () => {
   return;
 };
 
-const getCurrentWorkingDirectory = () => {
+const getCurrentWorkingDir = () => {
   return process.cwd();
 };
 
-const changeCWDToHomeDir = () => {
-  const homeDir = os.homedir();
-  process.chdir(homeDir);
+const getHomeDir = () => {
+  return os.homedir();
 }
 
-export { getUsername, getCurrentWorkingDirectory, changeCWDToHomeDir };
+const changeCWDToHomeDir = () => {
+  process.chdir(getHomeDir());
+}
+
+export { getUsername, getCurrentWorkingDir, changeCWDToHomeDir, getHomeDir };
