@@ -1,20 +1,22 @@
 import readline from 'readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
-import { changeCWDToHomeDir, getCurrentWorkingDirectory, getUsername } from './utils/index.js';
-import { defaultUsername } from './utils/constants.js';
+import { changeCWDToHomeDir, getUsername } from './utils/helpers.js';
+import { printByeMessage, printCurrentWorkingDir, printUsername } from './utils/printFunctions.js';
 
-const username = getUsername() || defaultUsername;
-console.log(`Welcome to the File Manager, ${username}!`);
+const username = getUsername();
+printUsername(username);
+
 changeCWDToHomeDir();
-console.log(`You are currently in ${getCurrentWorkingDirectory()}`);
+printCurrentWorkingDir();
 
 const rl = readline.createInterface({input, output});
 
 rl.on('line', async (message) => {
-  if (message.trim() === '.exit') { 
+  const trimmedMessage = message.trim();
+  if (trimmedMessage === '.exit') { 
     return rl.close() 
   };
-  console.log(`Received message: ${message}`);
+  console.log(`Received message: ${trimmedMessage}`);
 })
 
-rl.on('close', () => console.log(`Thank you for using File Manager, ${username}, goodbye!`))
+rl.on('close', () => printByeMessage(username));

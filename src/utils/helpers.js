@@ -7,10 +7,10 @@ const getUsername = () => {
   if (usernameArg) {
     const userName = usernameArg.split('=')[1];
 
-    return userName.length === 0 ? null : userName;
+    return userName.length === 0 ? undefined : userName;
   };
 
-  return null;
+  return;
 };
 
 const getCurrentWorkingDirectory = () => {
