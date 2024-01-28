@@ -2,10 +2,10 @@ import { createReadStream, createWriteStream } from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
 import { pipeline } from 'stream/promises';
-import { printFailureMessage, printInvalidMessage } from '../utils/printFunctions.js';
-import { getCurrentWorkingDir, normalizePath } from '../utils/helpers.js';
+import { printFailureMessage } from '../utils/printFunctions.js';
+import { getCurrentWorkingDir } from '../utils/helpers.js';
 
-const catCommand = (filePath) => {
+const catCommand = async (filePath) => {
   return new Promise((res) => {
     const readStream = createReadStream(path.resolve(getCurrentWorkingDir(), filePath), 'utf8');
     readStream.on('data', (data) => {
@@ -17,7 +17,6 @@ const catCommand = (filePath) => {
       res('');
     })
   })
-  
 };
 
 const addCommand = async (fileName) => {

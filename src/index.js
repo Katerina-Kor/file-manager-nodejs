@@ -19,11 +19,10 @@ rl.on('line', async (message) => {
   };
 
   const [command, ...params] = trimmedMessage.split(' ');
-  console.log(params);
   await chooseCommand(command, params.join(' ').trim());
   printCurrentWorkingDir();
 });
 
-// rl.on('error', () => printFailureMessage());
+rl.on('error', () => printFailureMessage());
 
 rl.on('close', () => printByeMessage(username));

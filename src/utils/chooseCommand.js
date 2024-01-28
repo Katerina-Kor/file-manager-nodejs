@@ -1,7 +1,10 @@
 import { addCommand, catCommand, cpCommand, mvCommand, rmCommand, rnCommand } from "../commands/bowf.js";
+import { hashCommand } from "../commands/hash.js";
 import { cdCommand, lsCommand, upCommand } from "../commands/nwd.js";
 import { osCommand } from "../commands/os.js";
+import { compressCommand, decompressCommand } from "../commands/zip.js";
 import { normalizePath, resolvePathes } from "./helpers.js";
+import { printInvalidMessage } from "./printFunctions.js";
 
 export const chooseCommand = async (command, arg) => {
   switch (command) {
@@ -80,8 +83,34 @@ export const chooseCommand = async (command, arg) => {
       osCommand(arg);
       break;
     }
-
-    default:
+    case 'hash': {
+      const normalizedArg = normalizePath(arg);
+      if (!normalizedArg) {
+        printInvalidMessage();
+        return;
+      }
+      await hashCommand(normalizedArg);
       break;
+    }
+    case 'compress': {
+      const [srcPath, destPath] = resolvePathes(arg);
+      if (!srcPath || !destPath) {
+        printInvalidMessage();
+        return;
+      }
+      await compressCommand(srcPath, destPath);
+      break;
+    }
+    case 'decompress': {
+      const [srcPath, destPath] = resolvePathes(arg);
+      if (!srcPath || !destPath) {
+        printInvalidMessage();
+        return;
+      }
+      await decompressCommand(srcPath, destPath);
+      break;
+    }
+    default:
+      printInvalidMessage();
   }
 }
