@@ -1,9 +1,12 @@
 import { createReadStream, createWriteStream} from 'fs';
+import fs from 'fs/promises';
 import { createBrotliCompress, createBrotliDecompress } from 'zlib';
 import { pipeline } from 'stream/promises';
+import { printFailureMessage } from '../utils/printFunctions.js';
 
 const compressCommand = async (srcFilePath, destFilePath) => {
   try {
+    await fs.access(srcFilePath);
     const readStream = createReadStream(srcFilePath, {
       encoding: 'utf8',
       flags: 'r',
@@ -20,6 +23,7 @@ const compressCommand = async (srcFilePath, destFilePath) => {
 
 const decompressCommand = async (srcFilePath, destFilePath) => {
   try {
+    await fs.access(srcFilePath);
     const readStream = createReadStream(srcFilePath, {
       flags: 'r',
     });
