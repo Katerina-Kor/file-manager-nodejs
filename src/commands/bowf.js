@@ -1,36 +1,80 @@
 import { createReadStream, createWriteStream } from 'fs';
 import fs from 'fs/promises';
+import path from 'path';
 import { pipeline } from 'stream/promises';
+import { printFailureMessage, printInvalidMessage } from '../utils/printFunctions.js';
+import { getCurrentWorkingDir, normalizePath } from '../utils/helpers.js';
 
-const catCommand = (file) => {
-  createReadStream(file).pipe(process.stdout)
+const catCommand = (filePath) => {
+  return new Promise((res) => {
+    const readStream = createReadStream(path.resolve(getCurrentWorkingDir(), filePath), 'utf8');
+    readStream.on('data', (data) => {
+      console.log(data);
+    });
+    readStream.on('end', () => res(''));
+    readStream.on('error', (error) => {
+      printFailureMessage(error.message);
+      res('');
+    })
+  })
+  
 };
 
 const addCommand = async (fileName) => {
-  await fs.appendFile(
-    fileName,
-    '',
-    { flag: 'ax' }
-  );
+  try {
+    await fs.appendFile(
+      path.join(getCurrentWorkingDir(), fileName),
+      '',
+      { flag: 'ax' }
+    );
+  } catch (error) {
+    printFailureMessage(error.message);
+  }
 };
 
 const rnCommand = async (fileName, newFileName) => {
-  await fs.rename(fileName, newFileName);
+  const srcFilePath = path.resolve(getCurrentWorkingDir(), fileName);
+  const destFilePath = path.resolve(getCurrentWorkingDir(), newFileName)
+  try {
+    await fs.rename(srcFilePath, destFilePath);
+  } catch (error) {
+    printFailureMessage(error.message);
+  }
 };
 
-const cpCommand = async (srcFileName, descFileName) => {
-  const readStream = createReadStream(srcFileName, { flags: 'r'});
-  const writeStream = createWriteStream(descFileName, { flags: 'w'});
-  await pipeline(readStream, writeStream);
+const cpCommand = async (fileName, copyFileDir) => {
+  try {
+    const srcFilePath = path.resolve(getCurrentWorkingDir(), fileName);
+    const destFilePath = path.resolve(getCurrentWorkingDir(), copyFileDir, path.basename(fileName));
+    await fs.access(srcFilePath);
+    const readStream = createReadStream(srcFilePath, { flags: 'r'});
+    const writeStream = createWriteStream(destFilePath, { flags: 'wx'});
+    await pipeline(readStream, writeStream);
+  } catch (error) {
+    printFailureMessage(error.message);
+  }
 };
 
 const rmCommand = async (fileName) => {
-  await fs.unlink(fileName);
+  try {
+    await fs.unlink(path.resolve(getCurrentWorkingDir(), fileName));
+  } catch (error) {
+    printFailureMessage(error.message);
+  }
 }
 
-const mvCommand = async (srcFileName, destFileName) => {
-  await cpCommand(srcFileName, destFileName);
-  await rmCommand(srcFileName);
+const mvCommand = async (fileName, copyFileDir) => {
+  try {
+    const srcFilePath = path.resolve(getCurrentWorkingDir(), fileName);
+    const destFilePath = path.resolve(getCurrentWorkingDir(), copyFileDir, path.basename(fileName));
+    await fs.access(srcFilePath);
+    const readStream = createReadStream(srcFilePath, { flags: 'r'});
+    const writeStream = createWriteStream(destFilePath, { flags: 'wx'});
+    await pipeline(readStream, writeStream);
+    await fs.unlink(srcFilePath);
+  } catch (error) {
+    printFailureMessage(error.message);
+  }
 };
 
 

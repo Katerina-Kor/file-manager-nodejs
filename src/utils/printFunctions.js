@@ -13,4 +13,8 @@ const printByeMessage = (username = DEFAULT_USERNAME) => {
   console.log(`Thank you for using File Manager, ${username}, goodbye!`)
 };
 
-export { printUsername, printCurrentWorkingDir, printByeMessage };
+const printFailureMessage = (errorMessage = 'unknown error') => console.log(`Operation failed: ${errorMessage}`);
+
+const printInvalidMessage = () => console.log('Invalid input');
+
+export { printUsername, printCurrentWorkingDir, printByeMessage, printFailureMessage, printInvalidMessage };
