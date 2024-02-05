@@ -11,10 +11,10 @@ const catCommand = async (filePath) => {
     readStream.on('data', (data) => {
       console.log(data);
     });
-    readStream.on('end', () => res(''));
+    readStream.on('end', () => res());
     readStream.on('error', (error) => {
       printFailureMessage(error.message);
-      res('');
+      res();
     })
   })
 };
@@ -35,6 +35,13 @@ const rnCommand = async (fileName, newFileName) => {
   const srcFilePath = path.resolve(getCurrentWorkingDir(), fileName);
   const destFilePath = path.resolve(getCurrentWorkingDir(), newFileName)
   try {
+    // check if dest file already exists
+    await fs.appendFile(
+      destFilePath,
+      '',
+      { flag: 'ax' }
+    );
+
     await fs.rename(srcFilePath, destFilePath);
   } catch (error) {
     printFailureMessage(error.message);

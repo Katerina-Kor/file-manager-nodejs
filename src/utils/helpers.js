@@ -1,4 +1,5 @@
 import os from 'os';
+import { DEFAULT_USERNAME } from './constants.js';
 
 const getUsername = () => {
   const args = process.argv;
@@ -7,10 +8,10 @@ const getUsername = () => {
   if (usernameArg) {
     const userName = usernameArg.split('=')[1];
 
-    return userName.length === 0 ? undefined : userName;
+    return userName.length === 0 ? DEFAULT_USERNAME : userName;
   };
 
-  return;
+  return DEFAULT_USERNAME;
 };
 
 const getCurrentWorkingDir = () => {
